@@ -12,6 +12,21 @@ Trie::Node::Node(bool initIsWord) : isWord(initIsWord)
     }
 }
 
+Trie::Node::~Node()
+{
+    for(int index = 0; index < sizeof(branches); index++)
+    {
+        delete branches[index];
+    }
+}
+
+Trie::Node::Node(const Trie& other)
+{
+    
+}
+
+
+
 bool Trie::Node::getIsWord()
 {
     return isWord;
@@ -32,3 +47,7 @@ void Trie::Node::setBranch(int index, Node* newBranch)
     branches[index] = newBranch;
 }
 //-----------------------End of Node Class-------------------------
+
+//-----------------------Trie Class--------------------------------
+Trie::Trie() : node(new Node(false)) { }
+
