@@ -5,7 +5,7 @@
 //----------------------Node Class---------------------------------
 Trie::Node::Node(bool initIsWord) : isWord(initIsWord)
 {
-    for (int index = 0; index < sizeof(branches); index++)
+    for (int index = 0; index < 26; index++)
     {
         branches[index] = nullptr;
     }
@@ -13,7 +13,7 @@ Trie::Node::Node(bool initIsWord) : isWord(initIsWord)
 
 Trie::Node::~Node()
 {
-    for(int index = 0; index < sizeof(branches); index++)
+    for(int index = 0; index < 26; index++)
     {
         delete branches[index];
     }
@@ -43,12 +43,12 @@ Trie::Node::Node(const Node& other)
 {
     isWord = other.isWord;
 
-    for (int index = 0; index < sizeof(branches); index++)
+    for (int index = 0; index < 26; index++)
     {
         branches[index] = nullptr;
     }
 
-    for (int index = 0; index < sizeof(other.branches); index++)
+    for (int index = 0; index < 26; index++)
     {
         if (other.branches[index])
         {
@@ -61,12 +61,12 @@ Trie::Node & Trie::Node::operator=(Node& other)
 {
     std::swap(isWord, other.isWord);
 
-    for (int index = 0; index < sizeof(branches); index++)
+    for (int index = 0; index < 26; index++)
     {
         branches[index] = nullptr;
     }
     
-    for (int index = 0; index < sizeof(other.branches); index++)
+    for (int index = 0; index < 26; index++)
     {
         std::swap(branches[index], other.branches[index]);
     }
