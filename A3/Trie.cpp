@@ -78,5 +78,51 @@ Trie::Node & Trie::Node::operator=(Node& other)
 //-----------------------End of Node Class-------------------------
 
 //-----------------------Trie Class--------------------------------
-Trie::Trie() : node(new Node(false)) { }
+Trie::Trie() : root(new Node(false)), asciiAdjuster(97) { }
+
+void Trie::addAWord(std::string word)
+{
+    Node& current = root;
+    for (int index = 0; index < word.length(); index++)
+    {
+        if (index + 1 != word.length())
+        {
+            addCharacter(word[index], current, false);
+        }
+        else
+        {
+            addCharacter(word[index], current, true);
+        }
+    }
+}
+
+void Trie::addCharacter(char character, Node& current, bool isLastChar)
+{
+    int index = int(character) - asciiAdjuster;
+    if (!(current.getBranch(index)))
+    {
+        if (!isLastChar)
+        {
+            current.setBranch(index, new Node(false));
+        }
+        else
+        {
+            current.setBranch(index, new Node(true));
+        }
+    }
+    else 
+    {
+        current = *(current.getBranch(index));
+    }
+}
+
+bool Trie::isAWord(std::string word)
+{
+    
+}
+
+std::vector<std::string> Trie::allWordsStartingWithPrefix(std::string words)
+{
+
+}
 

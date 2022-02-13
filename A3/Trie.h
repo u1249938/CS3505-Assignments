@@ -24,14 +24,16 @@ private:
     };
 
 private:
-    Node node;
+    Node root;
+    int asciiAdjuster;
 
 public:
 
     Trie(); // make this default
-    void addAWord(std::string); // word passed is added to the trie, if already in trie don't add
-    bool isAWord(std::string); // if passed an empty string, return false
-    std::vector<std::string> allWordsStartingWithPrefix(std::string); // empty prefix should return all words in trie
+    void addAWord(std::string word); // word passed is added to the trie, if already in trie don't add
+    void addCharacter(char character, Node& current, bool isLastChar);
+    bool isAWord(std::string word); // if passed an empty string, return false
+    std::vector<std::string> allWordsStartingWithPrefix(std::string words); // empty prefix should return all words in trie
 };
 
 #endif
