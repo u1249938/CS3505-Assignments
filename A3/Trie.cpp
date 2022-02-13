@@ -7,8 +7,7 @@ Trie::Node::Node(bool initIsWord) : isWord(initIsWord)
 {
     for (int index = 0; index < sizeof(branches); index++)
     {
-        Node* ptr = nullptr;
-        branches[index] = ptr;
+        branches[index] = nullptr;
     }
 }
 
@@ -118,11 +117,63 @@ void Trie::addCharacter(char character, Node& current, bool isLastChar)
 
 bool Trie::isAWord(std::string word)
 {
+    Node& current = root;
+    for (int index = 0; index < word.length(); index++)
+    {
+        int character = int(word[index]) - asciiAdjuster;
+        if (!(current.getBranch(character)))
+        {
+            return false;
+        }
+        else
+        {
+            current = *(current.getBranch(character));
+        }
+    }
+    if (!current.getIsWord())
+    {
+        return false;
+    }
     
+    return true;
 }
 
-std::vector<std::string> Trie::allWordsStartingWithPrefix(std::string words)
+std::vector<std::string> Trie::allWordsStartingWithPrefix(std::string prefix)
 {
+    std::vector<std::string> allWords;
+    Node& current = root;
+    for (int index = 0; index < prefix.length(); index++)
+    {
+        int character = int(prefix[index]) - asciiAdjuster;
+        if (!(current.getBranch(character)))
+        {
+            return allWords;
+        }
+        else
+        {
+            current = *(current.getBranch(character));
+        }
+    }
+    getAllWords(allWords, current, prefix);
+    return allWords;
+}
 
+void Trie::getAllWords(std::vector<std::string>& allWords, Node& current, std::string currentWord)
+{
+    if (current.getIsWord())
+    {
+        allWords.push_back(currentWord);
+    }
+    int numOfLetters = 26;
+    for (int index = 0; index < numOfLetters; index++)
+    {
+        if (current.getBranch(0))
+        {
+            Node& newCurrent = *(current.getBranch(index));
+            std::string newCurrentWord = currentWord;
+            newCurrentWord.push_back(char(index + asciiAdjuster));
+            getAllWords(allWords, newCurrent, newCurrentWord);
+        }
+    }
 }
 
