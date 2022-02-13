@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall -fsanitize=undefined -fsanitize=address -g
-TrieTest: TrieTest.o Trie.o
+TrieTest: TrieTest.o Trie.o Trie.h
 	$(CC) $(CFLAGS) -o TrieTest TrieTest.o Trie.o
 
 TrieTest.o: TrieTest.cpp
