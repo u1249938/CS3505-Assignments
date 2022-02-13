@@ -20,19 +20,12 @@ Trie::Node::~Node()
     }
 }
 
-Trie::Node::Node(const Trie& other)
-{
-    
-}
-
-
-
 bool Trie::Node::getIsWord()
 {
     return isWord;
 }
 
-Trie::Node::Node* Trie::Node::getBranch(int index)
+Trie::Node* Trie::Node::getBranch(int index)
 {
     return branches[index];
 }
@@ -46,6 +39,42 @@ void Trie::Node::setBranch(int index, Node* newBranch)
     }
     branches[index] = newBranch;
 }
+
+Trie::Node::Node(const Node& other)
+{
+    isWord = other.isWord;
+
+    for (int index = 0; index < sizeof(branches); index++)
+    {
+        branches[index] = nullptr;
+    }
+
+    for (int index = 0; index < sizeof(other.branches); index++)
+    {
+        if (other.branches[index])
+        {
+            branches[index] = new Node(*(other.branches[index]));
+        }
+    }
+}
+
+Trie::Node & Trie::Node::operator=(Node& other)
+{
+    std::swap(isWord, other.isWord);
+
+    for (int index = 0; index < sizeof(branches); index++)
+    {
+        branches[index] = nullptr;
+    }
+    
+    for (int index = 0; index < sizeof(other.branches); index++)
+    {
+        std::swap(branches[index], other.branches[index]);
+    }
+
+    return *this;
+}
+
 //-----------------------End of Node Class-------------------------
 
 //-----------------------Trie Class--------------------------------

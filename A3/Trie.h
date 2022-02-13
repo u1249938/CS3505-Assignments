@@ -15,11 +15,12 @@ private:
     public:
         Node(bool initIsWord);
         ~Node();
-        Node(const Trie& other);
-        Node & operator=(const Node& other);
         bool getIsWord();
         Node* getBranch(int index);
         void setBranch(int index, Node* newBranch);
+        Node(const Node& other);
+        Node & operator=(Node& other);
+        
     };
 
 private:
