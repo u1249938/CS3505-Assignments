@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -fsanitize=undefined -fsanitize=address -g
+CFLAGS = -Wall 
 TrieTest: TrieTest.o Trie.o Trie.h
 	$(CC) $(CFLAGS) -o TrieTest TrieTest.o Trie.o
 
