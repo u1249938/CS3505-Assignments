@@ -24,8 +24,21 @@ bool Trie::Node::getIsWord()
     return isWord;
 }
 
+void Trie::Node::setIsWord(bool isAWord)
+{
+    isWord = isAWord;
+}
+
 Trie::Node* Trie::Node::getBranch(int index)
 {
+    if (index > 25 || index < 0)
+    {
+        return 0;
+    }
+    if (!branches[index])
+    {
+        return nullptr;
+    }
     return branches[index];
 }
 
@@ -42,14 +55,10 @@ void Trie::Node::setBranch(int index, Node* newBranch)
 Trie::Node::Node(const Node& other)
 {
     isWord = other.isWord;
-
     for (int index = 0; index < 26; index++)
     {
         branches[index] = nullptr;
-    }
 
-    for (int index = 0; index < 26; index++)
-    {
         if (other.branches[index])
         {
             branches[index] = new Node(*(other.branches[index]));
@@ -60,11 +69,6 @@ Trie::Node::Node(const Node& other)
 Trie::Node & Trie::Node::operator=(Node& other)
 {
     std::swap(isWord, other.isWord);
-
-    for (int index = 0; index < 26; index++)
-    {
-        branches[index] = nullptr;
-    }
     
     for (int index = 0; index < 26; index++)
     {
@@ -77,60 +81,43 @@ Trie::Node & Trie::Node::operator=(Node& other)
 //-----------------------End of Node Class-------------------------
 
 //-----------------------Trie Class--------------------------------
-Trie::Trie() : root(new Node(false)), asciiAdjuster(97) { }
+Trie::Trie() : root(new Node(false)), asciiAdjuster('a') { }
 
 void Trie::addAWord(std::string word)
 {
-    Node& current = root;
+    Node *current = &root;
     for (int index = 0; index < word.length(); index++)
     {
-        if (index + 1 != word.length())
+        int position = word[index] - asciiAdjuster;
+        if (!(current->getBranch(position)))
         {
-            addCharacter(word[index], current, false);
+            current->setBranch(position, new Node(false));
         }
-        else
+        if (index == word.length() - 1)
         {
-            addCharacter(word[index], current, true);
+            current->setIsWord(true);
         }
-    }
-}
 
-void Trie::addCharacter(char character, Node& current, bool isLastChar)
-{
-    int index = int(character) - asciiAdjuster;
-    if (!(current.getBranch(index)))
-    {
-        if (!isLastChar)
-        {
-            current.setBranch(index, new Node(false));
-        }
-        else
-        {
-            current.setBranch(index, new Node(true));
-        }
-    }
-    else 
-    {
-        current = *(current.getBranch(index));
+        current = current->getBranch(position);
     }
 }
 
 bool Trie::isAWord(std::string word)
 {
-    Node& current = root;
+    Node* current = &root;
     for (int index = 0; index < word.length(); index++)
     {
-        int character = int(word[index]) - asciiAdjuster;
-        if (!(current.getBranch(character)))
+        int character = word[index] - asciiAdjuster;
+        if (!(current->getBranch(character)))
         {
             return false;
         }
         else
         {
-            current = *(current.getBranch(character));
+            current = current->getBranch(character);
         }
     }
-    if (!current.getIsWord())
+    if (!(current->getIsWord()))
     {
         return false;
     }
@@ -141,38 +128,42 @@ bool Trie::isAWord(std::string word)
 std::vector<std::string> Trie::allWordsStartingWithPrefix(std::string prefix)
 {
     std::vector<std::string> allWords;
-    Node& current = root;
+    Node* current = &root;
     for (int index = 0; index < prefix.length(); index++)
     {
-        int character = int(prefix[index]) - asciiAdjuster;
-        if (!(current.getBranch(character)))
+        int character = prefix[index] - asciiAdjuster;
+        if (!(current->getBranch(character)))
         {
             return allWords;
         }
         else
         {
-            current = *(current.getBranch(character));
+            current = current->getBranch(character);
         }
+    }
+    if (current->getIsWord())
+    {
+        allWords.push_back(prefix);
     }
     getAllWords(allWords, current, prefix);
     return allWords;
 }
 
-void Trie::getAllWords(std::vector<std::string>& allWords, Node& current, std::string currentWord)
+void Trie::getAllWords(std::vector<std::string>& allWords, Node* current, std::string currentWord)
 {
-    if (current.getIsWord())
-    {
-        allWords.push_back(currentWord);
-    }
     int numOfLetters = 26;
     for (int index = 0; index < numOfLetters; index++)
     {
-        if (current.getBranch(0))
+        if (current->getIsWord())
         {
-            Node& newCurrent = *(current.getBranch(index));
-            std::string newCurrentWord = currentWord;
-            newCurrentWord.push_back(char(index + asciiAdjuster));
-            getAllWords(allWords, newCurrent, newCurrentWord);
+            currentWord = currentWord + char(index + asciiAdjuster);
+            allWords.push_back(currentWord);
+        }
+        if (current->getBranch(index))
+        {
+            current = current->getBranch(index);
+            getAllWords(allWords, current, currentWord);
+            currentWord = currentWord + char(index + asciiAdjuster);
         }
     }
 }
